@@ -1,0 +1,18 @@
+.sgNavbar {
+    background-color: #101010;
+    color: #ffffff;
+}
+
+.sgNavbar a:hover {
+    background-color: #031797;
+    color: #ffffff;
+    transition: 0.7s;
+}
+
+.sgNavbar a {
+    padding: 0.7rem;
+}
+
+.navbar {
+    padding: 0;
+}
