@@ -23,12 +23,12 @@ INSERT INTO catalog (image, scientificName, commonName, category, origin) VALUES
 "https://spidersworld.eu/1446-large_default/psalmopoeus-irminia-female-7cm-suntiger-tarantula.jpg",
 "Psalmopoeus Irminia",
 "Venezuelan Suntiger",
-"Old World Arboreal",
+"New World Arboreal",
 "Venezuela");
 
 INSERT INTO catalog (image, scientificName, commonName, category, origin) VALUES (
 "https://spidersworld.eu/1349-large_default/brachypelma-hamorii-female-45cm-10cm-red-knee-tarantula.jpg",
 "Brachypelma Hamorii",
 "Mexican Red Knee",
-"Old World Terrestrial",
+"New World Terrestrial",
 "Mexico");
