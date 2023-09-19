@@ -23,13 +23,12 @@ $(document).ready(function () {
             });
         },
         error: function (error) {
-            console.error(
-                "Error fetching data for List 1: " + error.responseText
-            );
+            console.error("Error fetching data for List 1: " + error.responseText);
         },
     });
 });
 
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Searchbar
 document.getElementById("searchInput").addEventListener("input", function () {
     // Get the search input value
