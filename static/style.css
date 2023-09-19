@@ -11,6 +11,12 @@ p {
     color: #ffffff;
 }
 
+input {
+    margin-top: 2px;
+    margin-bottom: 2px;
+    width: 35%;
+}
+
 .image-container {
     width: 300px; /* Set the container width */
     height: 200px; /* Set the container height */
