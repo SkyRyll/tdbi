@@ -1,16 +1,3 @@
-body {
-    background-color: #151515;
-    color: #ffffff;
-}
-
-h1 {
-    color: #ffffff;
-}
-
-p {
-    color: #ffffff;
-}
-
 input {
     margin-top: 2px;
     margin-bottom: 2px;
@@ -37,4 +24,10 @@ input {
     text-align: left; /* Center text horizontally */
     display: flex; /* Use flexbox for vertical alignment */
     align-items: center; /* Center text vertically */
+}
+
+.catalog-row:hover {
+    background-color: #49525a !important; /* Change this to your desired highlight color */
+    cursor: pointer;
+    transition: background-color 0.15s ease-in-out;
 }

@@ -8,9 +8,11 @@ $(document).ready(function () {
         success: function (data) {
             data.forEach(function (entry) {
                 $("#animalCatalog").append(
-                    '<li class="list-group-item bg-dark"><div class="row"><div class="col-md image-container"><img src="' +
+                    '<li class="list-group-item bg-dark catalog-row" onclick="redirectToEntry(\'' +
+                        entry.scientificName +
+                        '\')"><div class="row"><div class="col-md image-container"><img src="' +
                         entry.image +
-                        '" id="img" onerror="standby()""></div><div class="col-md">' +
+                        '" id="img"></div><div class="col-md">' +
                         entry.scientificName +
                         '</div><div class="col-md">' +
                         entry.commonName +
@@ -62,3 +64,17 @@ document.getElementById("searchInput").addEventListener("input", function () {
         nothingFoundRow.style.display = "none";
     }
 });
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// onclick routing
+// Get all catalog rows
+const catalogRows = document.querySelectorAll(".catalog-row");
+
+// Add a click event listener to each row
+function redirectToEntry(scientificName) {
+    // Construct the URL based on the scientific name
+    const url = `/entry/${encodeURIComponent(scientificName)}`;
+
+    // Redirect to the new URL
+    window.location.href = url;
+}

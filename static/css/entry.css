@@ -1,0 +1,14 @@
+.row {
+    text-align: left; /* Center text horizontally */
+    display: flex; /* Use flexbox for vertical alignment */
+    align-items: center; /* Center text vertically */
+}
+
+.image img {
+    border: 3px solid #ffffff; /* Add a 2px black border around the image */
+    border-radius: 0.25rem;
+}
+
+.infos {
+    margin-top: 25px;
+}

@@ -67,6 +67,16 @@ function get_index(req, res) {
     });
 }
 
+app.get("/catalog", (req, res) => {
+    get_catalog(req, res);
+});
+
+function get_catalog(req, res) {
+    res.render("pages/catalog", {
+        loggedin: req.session.loggedin,
+    });
+}
+
 app.get("/entry/:id", async (req, res) => {
     const entryId = req.params.id;
 
