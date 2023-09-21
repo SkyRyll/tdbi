@@ -16,7 +16,7 @@ const dbPort = 3306;
 const nodeAppPort = 3000;
 
 // expose static path
-app.use(express.static(path.join(__dirname, "static")));
+app.use(express.static("static"));
 
 // set view engine
 app.set("view engine", "ejs");
@@ -67,11 +67,52 @@ function get_index(req, res) {
     });
 }
 
+app.get("/catalog", (req, res) => {
+    get_catalog(req, res);
+});
+
+function get_catalog(req, res) {
+    res.render("pages/catalog", {
+        loggedin: req.session.loggedin,
+    });
+}
+
+app.get("/entry/:id", async (req, res) => {
+    const entryId = req.params.id;
+
+    try {
+        // Query the database to fetch data for the entry
+        const query = "SELECT * FROM catalog WHERE scientificName = ?";
+        connection.query(query, [entryId], (err, result) => {
+            if (err) {
+                console.error("Database query error: " + err.message);
+                res.status(500).json({ error: "Internal Server Error" });
+            } else {
+                // Log the JSON data
+                console.log(result[0]);
+
+                // Render an HTML template with the entry data
+                get_entry(req, res, result[0]);
+            }
+        });
+    } catch (err) {
+        // Handle errors appropriately
+        res.status(500).send("Internal Server Error");
+    }
+});
+
+function get_entry(req, res, entryData) {
+    res.render("pages/entry_template", {
+        loggedin: req.session.loggedin,
+        entry: entryData,
+    });
+}
+
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 app.get("/getAnimalCatalog", (req, res) => {
-    const sql = "SELECT * FROM catalog"; // Replace with your actual query
-    connection.query(sql, (err, result) => {
+    const query = "SELECT * FROM catalog";
+    connection.query(query, (err, result) => {
         if (err) {
             console.error("Database query error: " + err.message);
             res.status(500).json({ error: "Internal Server Error" });

@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <!-- Required meta tags -->
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+
+        <!-- CSS Files -->
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" />
+        <link rel="stylesheet" type="text/css" href="/css/style.css" />
+        <link rel="stylesheet" type="text/css" href="/css/navbar.css" />
+        <link rel="stylesheet" type="text/css" href="/css/entry.css" />
+
+        <!-- JS Files -->
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+
+        <title>TDBI: <%= entry.scientificName %></title>
+    </head>
+    <body>
+        <div class="container">
+            <div class="row">
+                <div class="col-md">
+                    <div class="image">
+                        <img src="<%= entry.image %>" alt="Image" class="img-fluid" />
+                    </div>
+                </div>
+                <div class="col-md">
+                    <div class="text">
+                        <h1><%= entry.scientificName %></h1>
+                        <br /><br />
+                        <h3>Common Name: <%= entry.commonName %></h3>
+                        <br /><br />
+                        <h3>Category: <%= entry.category %></h3>
+                        <br /><br />
+                        <h3>Origin: <%= entry.origin %></h3>
+                    </div>
+                </div>
+            </div>
+            <div class="infos">
+                <h3>Notes:</h3>
+                <div class="text">
+                    <p>
+                        More data to be added. More data to be added. More data to be added. More data to be added. More data to be added. More data to be added. More data to be added. More data to be added. More data to be added. More data to be added. More data to be added. More data to be added.
+                        More data to be added. More data to be added. More data to be added. More data to be added. More data to be added. More data to be added. More data to be added. More data to be added. More data to be added. More data to be added.
+                    </p>
+                </div>
+            </div>
+        </div>
+        <script type="text/javascript" src="/scripts/entryScript.js"></script>
+    </body>
+</html>
