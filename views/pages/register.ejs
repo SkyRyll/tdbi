@@ -9,17 +9,29 @@
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" />
         <link rel="stylesheet" type="text/css" href="/css/style.css" />
         <link rel="stylesheet" type="text/css" href="/css/navbar.css" />
-        <link rel="stylesheet" type="text/css" href="/css/index.css" />
+        <link rel="stylesheet" type="text/css" href="/css/loginRegister.css" />
 
         <!-- JS Files -->
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
 
-        <title>TDBI: Tarantula Database Interface</title>
+        <title>TDBI: Register</title>
     </head>
     <body>
         <%- include('../components/navbar'); %>
-        <h1>Homepage/ Index</h1>
+        <div class="login-page">
+            <div class="form">
+                <form class="register-form" action="" method="POST">
+                    <input type="email" placeholder="email address" name="email" required />
+                    <input type="text" placeholder="first name" name="firstname" required />
+                    <input type="text" placeholder="last name" name="lastname" required />
+                    <input type="text" placeholder="username" name="username" required />
+                    <input type="password" placeholder="password" name="password" required />
+                    <button>create account</button>
+                    <p class="message">Already registered? <a href="/login">Sign In</a></p>
+                </form>
+            </div>
+        </div>
     </body>
 </html>
