@@ -1,5 +1,5 @@
 .sgNavbar {
-    background-color: #080808;
+    background-color: #383c44;
     color: #ffffff;
 }
 
@@ -15,6 +15,7 @@
 
 .navbar {
     padding: 0;
+    margin-bottom: 2px;
 }
 
 .navbar-nav {
