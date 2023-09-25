@@ -2,10 +2,9 @@ const express = require("express");
 const app = express();
 const md5 = require("md5");
 const session = require("express-session");
-const path = require("path");
 const mysql = require("mysql2");
 const bodyParser = require("body-parser");
-//const encoder = bodyParser.urlencoded();
+const encoder = bodyParser.urlencoded();
 
 //VARIABLES
 const dbHost = "localhost";
@@ -61,21 +60,9 @@ app.get("/", (req, res) => {
     get_index(req, res);
 });
 
-function get_index(req, res) {
-    res.render("pages/index", {
-        loggedin: req.session.loggedin,
-    });
-}
-
 app.get("/catalog", (req, res) => {
     get_catalog(req, res);
 });
-
-function get_catalog(req, res) {
-    res.render("pages/catalog", {
-        loggedin: req.session.loggedin,
-    });
-}
 
 app.get("/entry/:id", async (req, res) => {
     const entryId = req.params.id;
@@ -101,10 +88,122 @@ app.get("/entry/:id", async (req, res) => {
     }
 });
 
+app.get("/account", (req, res) => {
+    get_account(req, res);
+});
+
+app.get("/login", (req, res) => {
+    get_login(req, res);
+});
+
+app.get("/register", (req, res) => {
+    get_register(req, res);
+});
+
+app.get("/logout", (req, res) => {
+    get_logout(req, res);
+});
+
+app.get("/error", (req, res) => {
+    get_error(req, res);
+});
+
+function get_index(req, res) {
+    res.render("pages/index", {
+        loggedin: req.session.loggedin,
+    });
+}
+
+function get_catalog(req, res) {
+    res.render("pages/catalog", {
+        loggedin: req.session.loggedin,
+    });
+}
+
 function get_entry(req, res, entryData) {
     res.render("pages/entry_template", {
         loggedin: req.session.loggedin,
         entry: entryData,
+    });
+}
+
+function get_account(req, res) {
+    //check if user is logged in
+    if (req.session.loggedin) {
+        show_account(req, res, req.session.userID);
+    } else {
+        get_login(req, res);
+    }
+}
+
+function show_account(req, res, user_id) {
+    let user = null;
+
+    const query = "SELECT * FROM accounts WHERE id = ?";
+    connection.query(query, [user_id], function (error, results, fields) {
+        if (error) throw error;
+        if (results.length > 0) {
+            //user found
+            user = results[0];
+
+            //don't supply password hash ;)
+            delete user.password;
+            res.render("pages/account", {
+                user: user,
+                loggedin: req.session.loggedin,
+            });
+        } else {
+            //invalid userID
+            get_error(req, res, "No User was found");
+        }
+    });
+}
+
+function get_login(req, res) {
+    //check if user is logged in
+    if (req.session.loggedin) {
+        show_account(req, res, req.session.userID);
+    } else {
+        res.render("pages/login", {
+            loggedin: req.session.loggedin,
+        });
+    }
+}
+
+function get_register(req, res) {
+    //check if user is logged in
+    if (req.session.loggedin) {
+        show_account(req, res, req.session.userID);
+    } else {
+        res.render("pages/register", {
+            loggedin: req.session.loggedin,
+        });
+    }
+}
+
+function get_logout(req, res) {
+    //check if user is logged in
+    if (req.session.loggedin) {
+        do_logout(req, res);
+    } else {
+        get_error(req, res, "Logout failed. You were not logged in, please login to logout");
+    }
+}
+
+function do_logout(req, res) {
+    //close session
+    req.session.username = null;
+    req.session.userID = null;
+    req.session.password = null;
+    req.session.loggedin = false;
+
+    get_index(req, res);
+}
+
+function get_error(req, res, errorMessage) {
+    res.render("pages/error", {
+        loggedin: req.session.loggedin,
+        errorMessage: errorMessage,
     });
 }
 
@@ -118,6 +217,59 @@ app.get("/getAnimalCatalog", (req, res) => {
             res.status(500).json({ error: "Internal Server Error" });
         } else {
             res.json(result);
+        }
+    });
+});
+
+//login check and redirect
+app.post("/login", encoder, function (req, res) {
+    var username = req.body.username;
+    var password = md5(req.body.password);
+
+    const query = "SELECT * FROM accounts WHERE username = ? AND password = ?";
+    connection.query(query, [username, password], function (error, results, fields) {
+        if (results.length > 0) {
+            req.session.loggedin = true;
+            req.session.username = username;
+            req.session.userID = results[0].id;
+
+            // render home page
+            get_account(req, res);
+        } else {
+            get_error(req, res, "Login failed. Please try again");
+            res.end();
+        }
+    });
+});
+
+// register user
+app.post("/register", encoder, function (req, res) {
+    var email = req.body.email;
+    var firstname = req.body.firstname;
+    var lastname = req.body.lastname;
+    var username = req.body.username;
+    var password = md5(req.body.password);
+
+    const query = "SELECT * FROM accounts WHERE username = ?";
+    connection.query(query, [username], function (error, results, fields) {
+        // If there is an issue with the query, output the error
+        if (error) throw error;
+        // If the account exists
+        if (results.length > 0) {
+            //user already exists, skip login
+            get_error(req, res, "This username is already taken");
+        } else {
+            connection.query("INSERT INTO accounts (email, firstname, lastname, username, password) VALUES (?,?,?,?,?)", [email, firstname, lastname, username, password], function (error, results, fields) {
+                // If there is an issue with the query, output the error
+                if (error) throw error;
+                // account added
+                req.session.loggedin = true;
+                req.session.username = username;
+                req.session.userID = results.insertId;
+
+                // render home page
+                get_account(req, res);
+            });
         }
     });
 });
