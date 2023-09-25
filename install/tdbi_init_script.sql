@@ -1,7 +1,7 @@
 CREATE DATABASE IF NOT EXISTS tdbi;
 USE tdbi;
 
-DROP TABLE catalog;
+DROP TABLE IF EXISTS catalog;
 CREATE TABLE IF NOT EXISTS catalog(
   id int NOT NULL AUTO_INCREMENT,
   image varchar(255),
@@ -11,6 +11,22 @@ CREATE TABLE IF NOT EXISTS catalog(
   origin varchar(255) NOT NULL,
   PRIMARY KEY (id)
 );
+
+CREATE TABLE IF NOT EXISTS accounts (
+  id int NOT NULL AUTO_INCREMENT,
+  email varchar(255) NOT NULL,
+  firstname varchar(50) NOT NULL,
+  lastname varchar(255) NOT NULL,
+  username varchar(255) NOT NULL,
+  password varchar(32) NOT NULL,
+  PRIMARY KEY (id)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb3;
+
+/* create users */
+INSERT INTO accounts (email, firstname, lastname, username, password) VALUES ("admin@mail.com", "admin", "login", "administrator", md5("admin"));
+INSERT INTO accounts (email, firstname, lastname, username, password) VALUES ("malte@mail.com", "Malte", "Blumenthal", "Lowadon", md5("LowaMalte"));
+INSERT INTO accounts (email, firstname, lastname, username, password) VALUES ("nils@mail.com", "Nils", "Simon", "SkyRyll", md5("SkyNils"));
+INSERT INTO accounts (email, firstname, lastname, username, password) VALUES ("niklas@mail.com", "Niklas", "Schraff", "Niki28", md5("NikiNiklas"));
 
 INSERT INTO catalog (image, scientificName, commonName, category, origin) VALUES (
 "https://spidersworld.eu/1403-large_default/monocentropus-balfouri-adult-female-socotra-island-blue-baboon.jpg",
