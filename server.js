@@ -1,10 +1,10 @@
 const express = require("express");
 const app = express();
-const md5 = require("md5");
 const session = require("express-session");
 const mysql = require("mysql2");
 const bodyParser = require("body-parser");
 const encoder = bodyParser.urlencoded();
+const bcrypt = require("bcrypt");
 
 //VARIABLES
 const dbHost = "localhost";
@@ -12,6 +12,7 @@ const dbUser = "root";
 const dbPass = "root";
 const dbDatabase = "tdbi";
 const dbPort = 3306;
+const saltRounds = 10;
 const nodeAppPort = 3000;
 
 // expose static path
@@ -224,19 +225,42 @@ app.get("/getAnimalCatalog", (req, res) => {
 //login check and redirect
 app.post("/login", encoder, function (req, res) {
     var username = req.body.username;
-    var password = md5(req.body.password);
+    var password = req.body.password;
 
-    const query = "SELECT * FROM accounts WHERE username = ? AND password = ?";
-    connection.query(query, [username, password], function (error, results, fields) {
+    // Retrieve 'hash' and 'salt' from the database based on the username
+    const query = "SELECT * FROM accounts WHERE username = ?";
+    connection.query(query, [username], function (error, results, fields) {
+        if (error) {
+            // Handle error
+        }
+
         if (results.length > 0) {
-            req.session.loggedin = true;
-            req.session.username = username;
-            req.session.userID = results[0].id;
+            const storedHash = results[0].hash; // Get the stored hash from the database
+            const salt = results[0].salt; // Get the salt from the database
 
-            // render home page
-            get_account(req, res);
+            bcrypt.hash(password, salt, function (err, hash) {
+                if (err) {
+                    // Handle error
+                }
+
+                // Compare 'hash' with 'storedHash' to verify the password
+                if (hash === storedHash) {
+                    // Passwords match, grant access
+                    req.session.loggedin = true;
+                    req.session.username = username;
+                    req.session.userID = results[0].id;
+
+                    // Render home page
+                    get_account(req, res);
+                } else {
+                    // Passwords do not match, deny access
+                    get_error(req, res, "Login failed. Incorrect password.");
+                    res.end();
+                }
+            });
         } else {
-            get_error(req, res, "Login failed. Please try again");
+            // User not found, handle accordingly
+            get_error(req, res, "Login failed. User not found.");
             res.end();
         }
     });
@@ -248,28 +272,37 @@ app.post("/register", encoder, function (req, res) {
     var firstname = req.body.firstname;
     var lastname = req.body.lastname;
     var username = req.body.username;
-    var password = md5(req.body.password);
+    var password = req.body.password;
+    const salt = bcrypt.genSaltSync(saltRounds);
 
-    const query = "SELECT * FROM accounts WHERE username = ?";
-    connection.query(query, [username], function (error, results, fields) {
-        // If there is an issue with the query, output the error
-        if (error) throw error;
-        // If the account exists
-        if (results.length > 0) {
-            //user already exists, skip login
-            get_error(req, res, "This username is already taken");
-        } else {
-            connection.query("INSERT INTO accounts (email, firstname, lastname, username, password) VALUES (?,?,?,?,?)", [email, firstname, lastname, username, password], function (error, results, fields) {
-                // If there is an issue with the query, output the error
-                if (error) throw error;
-                // account added
-                req.session.loggedin = true;
-                req.session.username = username;
-                req.session.userID = results.insertId;
-
-                // render home page
-                get_account(req, res);
-            });
+    bcrypt.hash(password, salt, function (err, hash) {
+        if (err) {
+            // Error while hashing, user wont be created
+            get_error(req, res, "Error while trying to create user. Please try again");
         }
+
+        const query = "SELECT * FROM accounts WHERE username = ?";
+        connection.query(query, [username], function (error, results, fields) {
+            // If there is an issue with the query, output the error
+            if (error) throw error;
+            // If the account exists
+            if (results.length > 0) {
+                //user already exists, skip login
+                get_error(req, res, "This username is already taken");
+            } else {
+                const query = "INSERT INTO accounts (email, firstname, lastname, username, hash, salt) VALUES (?,?,?,?,?,?)";
+                connection.query(query, [email, firstname, lastname, username, hash, salt], function (error, results, fields) {
+                    // If there is an issue with the query, output the error
+                    if (error) throw error;
+                    // account added
+                    req.session.loggedin = true;
+                    req.session.username = username;
+                    req.session.userID = results.insertId;
+
+                    // render home page
+                    get_account(req, res);
+                });
+            }
+        });
     });
 });
