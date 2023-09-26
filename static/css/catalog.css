@@ -33,3 +33,7 @@ input {
     cursor: pointer;
     transition: background-color 0.15s ease-in-out;
 }
+
+.catalog-container {
+    margin-bottom: 20px;
+}
