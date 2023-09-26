@@ -292,7 +292,7 @@ app.post(
             // Use a regular expression to validate the password
             const passwordRegex = /(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[^A-Za-z0-9])(?=.{8,})/;
             if (!passwordRegex.test(value)) {
-                throw new Error("Password must have at least 8 characters, 1 uppercase letter, 1 lowercase letter, and 1 special character.");
+                get_error(req, res, "Password must have at least 8 characters, 1 uppercase letter, 1 lowercase letter, and 1 special character.");
             }
             return true;
         }),
@@ -326,17 +326,28 @@ app.post(
                         //user already exists, skip login
                         get_error(req, res, "This username is already taken");
                     } else {
-                        const query = "INSERT INTO accounts (email, firstname, lastname, username, hash, salt) VALUES (?,?,?,?,?,?)";
-                        connection.query(query, [email, firstname, lastname, username, hash, salt], function (error, results, fields) {
+                        const query = "SELECT * FROM accounts WHERE email = ?";
+                        connection.query(query, [email], function (error, results, fields) {
                             // If there is an issue with the query, output the error
                             if (error) throw error;
-                            // account added
-                            req.session.loggedin = true;
-                            req.session.username = username;
-                            req.session.userID = results.insertId;
+                            // If the account exists
+                            if (results.length > 0) {
+                                //user already exists, skip login
+                                get_error(req, res, "This email is already in use");
+                            } else {
+                                const query = "INSERT INTO accounts (email, firstname, lastname, username, hash, salt) VALUES (?,?,?,?,?,?)";
+                                connection.query(query, [email, firstname, lastname, username, hash, salt], function (error, results, fields) {
+                                    // If there is an issue with the query, output the error
+                                    if (error) throw error;
+                                    // account added
+                                    req.session.loggedin = true;
+                                    req.session.username = username;
+                                    req.session.userID = results.insertId;
 
-                            // render home page
-                            get_account(req, res);
+                                    // render home page
+                                    get_account(req, res);
+                                });
+                            }
                         });
                     }
                 });
