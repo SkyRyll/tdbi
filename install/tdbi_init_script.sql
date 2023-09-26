@@ -3,30 +3,33 @@ USE tdbi;
 
 DROP TABLE IF EXISTS catalog;
 CREATE TABLE IF NOT EXISTS catalog(
-  id int NOT NULL AUTO_INCREMENT,
-  image varchar(255),
-  scientificName varchar(255) NOT NULL,
-  commonName varchar(50) NOT NULL,
-  category varchar(255) NOT NULL,
-  origin varchar(255) NOT NULL,
-  PRIMARY KEY (id)
+    id int NOT NULL AUTO_INCREMENT,
+    image varchar(255),
+    scientificName varchar(255) NOT NULL,
+    commonName varchar(255) NOT NULL,
+    category varchar(255) NOT NULL,
+    origin varchar(255) NOT NULL,
+    PRIMARY KEY (id)
 );
 
+DROP TABLE IF EXISTS accounts;
 CREATE TABLE IF NOT EXISTS accounts (
-  id int NOT NULL AUTO_INCREMENT,
-  email varchar(255) NOT NULL,
-  firstname varchar(50) NOT NULL,
-  lastname varchar(255) NOT NULL,
-  username varchar(255) NOT NULL,
-  password varchar(32) NOT NULL,
-  PRIMARY KEY (id)
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb3;
+    id int NOT NULL AUTO_INCREMENT,
+    email varchar(255) NOT NULL,
+    firstname varchar(255) NOT NULL,
+    lastname varchar(255) NOT NULL,
+    username varchar(255) NOT NULL,
+    hash varchar(255) NOT NULL,
+    salt varchar(255) NOT NULL,
+    PRIMARY KEY (id)
+);
 
-/* create users */
-INSERT INTO accounts (email, firstname, lastname, username, password) VALUES ("admin@mail.com", "admin", "login", "administrator", md5("admin"));
-INSERT INTO accounts (email, firstname, lastname, username, password) VALUES ("malte@mail.com", "Malte", "Blumenthal", "Lowadon", md5("LowaMalte"));
-INSERT INTO accounts (email, firstname, lastname, username, password) VALUES ("nils@mail.com", "Nils", "Simon", "SkyRyll", md5("SkyNils"));
-INSERT INTO accounts (email, firstname, lastname, username, password) VALUES ("niklas@mail.com", "Niklas", "Schraff", "Niki28", md5("NikiNiklas"));
+INSERT INTO catalog (image, scientificName, commonName, category, origin) VALUES (
+"https://cdn.shopify.com/s/files/1/0095/0416/1855/products/333056878_927995305291954_7332773921864974327_n_40581be2-0fde-406f-89b5-39203f515fc2.jpg?v=1678804882",
+"Chromatopelma Cyaneopubescens",
+"Green Bottle Blue",
+"New World Terrestrial",
+"Venezuela");
 
 INSERT INTO catalog (image, scientificName, commonName, category, origin) VALUES (
 "https://spidersworld.eu/1403-large_default/monocentropus-balfouri-adult-female-socotra-island-blue-baboon.jpg",
