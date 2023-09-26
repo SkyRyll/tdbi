@@ -6,6 +6,7 @@ const bodyParser = require("body-parser");
 const encoder = bodyParser.urlencoded();
 const bcrypt = require("bcrypt");
 const { check, validationResult } = require("express-validator");
+const rateLimit = require("express-rate-limit");
 
 //VARIABLES
 const dbHost = "localhost";
@@ -38,6 +39,16 @@ app.listen(nodeAppPort, () => {
     console.log(`App listening at port ${nodeAppPort}`);
     console.log("http://localhost:" + nodeAppPort + "/");
 });
+
+// Create a rate limiter with your desired options
+const limiter = rateLimit({
+    windowMs: 1 * 60 * 1000, // 15 minutes
+    max: 200, // Limit each IP to 100 requests per windowMs
+    message: "Too many requests from this IP, please try again later.",
+});
+
+// Apply the rate limiter middleware to specific routes or globally
+app.use("/*", limiter); // Apply to '/api' routes, for example
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -292,7 +303,7 @@ app.post(
             // Use a regular expression to validate the password
             const passwordRegex = /(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[^A-Za-z0-9])(?=.{8,})/;
             if (!passwordRegex.test(value)) {
-                get_error(req, res, "Password must have at least 8 characters, 1 uppercase letter, 1 lowercase letter, and 1 special character.");
+                get_error(req, res, "Password must have at least 8 characters, 1 uppercase letter, 1 lowercase letter, 1 number, and 1 special character.");
             }
             return true;
         }),
