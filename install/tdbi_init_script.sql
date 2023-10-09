@@ -24,6 +24,25 @@ CREATE TABLE IF NOT EXISTS accounts (
     PRIMARY KEY (id)
 );
 
+DROP TABLE IF EXISTS collections;
+CREATE TABLE IF NOT EXISTS collections (
+    id int NOT NULL AUTO_INCREMENT,
+    name varchar(255) NOT NULL,
+    ownerId int NOT NULL,
+    PRIMARY KEY (id)
+);
+
+INSERT INTO accounts (email, firstname, lastname, username, hash, salt) VALUES (
+    "skyryll1987@gmail.com",
+    "Nils",
+    "Simon",
+    "SkyRyll",
+    "$2b$10$5WATKQoIVg7Gf3vR1HhygO4CmjerCvPBkMoJNpDXs4MCl2Ewnmd.S",
+    "$2b$10$5WATKQoIVg7Gf3vR1HhygO"
+);
+
+INSERT INTO collections (name, ownerId) VALUES ("Test Collection", 1);
+
 INSERT INTO catalog (image, scientificName, commonName, category, origin) VALUES (
 "https://cdn.shopify.com/s/files/1/0095/0416/1855/products/333056878_927995305291954_7332773921864974327_n_40581be2-0fde-406f-89b5-39203f515fc2.jpg?v=1678804882",
 "Chromatopelma Cyaneopubescens",

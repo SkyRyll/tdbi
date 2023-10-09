@@ -105,6 +105,10 @@ app.get("/account", (req, res) => {
     get_account(req, res);
 });
 
+app.get("/collections", (req, res) => {
+    get_collections(req, res);
+});
+
 app.get("/login", (req, res) => {
     get_login(req, res);
 });
@@ -211,6 +215,21 @@ function do_logout(req, res) {
     req.session.loggedin = false;
 
     get_index(req, res);
+}
+
+function get_collections(req, res) {
+    //check if user is logged in
+    if (req.session.loggedin) {
+        show_collections(req, res, req.session.userID);
+    } else {
+        get_login(req, res);
+    }
+}
+
+function show_collections(req, res) {
+    res.render("pages/collections", {
+        loggedin: req.session.loggedin,
+    });
 }
 
 function get_error(req, res, errorMessage) {
