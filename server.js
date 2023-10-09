@@ -149,7 +149,7 @@ function get_account(req, res) {
     if (req.session.loggedin) {
         show_account(req, res, req.session.userID);
     } else {
-        get_login(req, res);
+        res.redirect("/login");
     }
 }
 
@@ -179,7 +179,7 @@ function show_account(req, res, user_id) {
 function get_login(req, res) {
     //check if user is logged in
     if (req.session.loggedin) {
-        show_account(req, res, req.session.userID);
+        res.redirect("/account");
     } else {
         res.render("pages/login", {
             loggedin: req.session.loggedin,
@@ -190,7 +190,7 @@ function get_login(req, res) {
 function get_register(req, res) {
     //check if user is logged in
     if (req.session.loggedin) {
-        show_account(req, res, req.session.userID);
+        res.redirect("/account");
     } else {
         res.render("pages/register", {
             loggedin: req.session.loggedin,
@@ -214,7 +214,7 @@ function do_logout(req, res) {
     req.session.password = null;
     req.session.loggedin = false;
 
-    get_index(req, res);
+    res.redirect("/");
 }
 
 function get_collections(req, res) {
@@ -222,7 +222,7 @@ function get_collections(req, res) {
     if (req.session.loggedin) {
         show_collections(req, res, req.session.userID);
     } else {
-        get_login(req, res);
+        res.redirect("/login");
     }
 }
 
@@ -252,6 +252,23 @@ app.get("/getAnimalCatalog", (req, res) => {
             res.json(result);
         }
     });
+});
+
+app.get("/getCollections", (req, res) => {
+    if (req.session.loggedin) {
+        const ownerId = req.session.userID;
+        const query = "SELECT * FROM collections WHERE ownerId = ?";
+        connection.query(query, [ownerId], (err, result) => {
+            if (err) {
+                console.error("Database query error: " + err.message);
+                res.status(500).json({ error: "Internal Server Error" });
+            } else {
+                res.json(result);
+            }
+        });
+    } else {
+        get_error(req, res, "not logged in");
+    }
 });
 
 //login check and redirect
@@ -295,7 +312,7 @@ app.post(
                             req.session.userID = results[0].id;
 
                             // Render home page
-                            get_account(req, res);
+                            res.redirect("/account");
                         } else {
                             // Passwords do not match, deny access
                             get_error(req, res, "Login failed. Incorrect password.");

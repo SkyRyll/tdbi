@@ -7,21 +7,8 @@ $(document).ready(function () {
         dataType: "json",
         success: function (data) {
             data.forEach(function (entry) {
-                $("#animalCatalog").append(
-                    '<li class="list-group-item bg-dark catalog-row" onclick="redirectToEntry(\'' +
-                        entry.scientificName +
-                        '\')"><div class="row"><div class="col-md image-container"><img src="' +
-                        entry.image +
-                        '" id="img"></div><div class="col-md">' +
-                        entry.scientificName +
-                        '</div><div class="col-md">' +
-                        entry.commonName +
-                        '</div><div class="col-md">' +
-                        entry.category +
-                        '</div><div class="col-md">' +
-                        entry.origin +
-                        "</div></div></li>"
-                );
+                const entryHtml = createEntry(entry);
+                $("#animalCatalog").append(entryHtml);
             });
         },
         error: function (error) {
@@ -29,6 +16,19 @@ $(document).ready(function () {
         },
     });
 });
+
+function createEntry(entry) {
+    return `
+    <li class="list-group-item bg-dark catalog-row" onclick="redirectToEntry('${entry.scientificName}')">
+            <div class="row">
+                <div class="col-md image-container"><img src="${entry.image}" id="img" /></div>
+                <div class="col-md">${entry.scientificName}</div>
+                <div class="col-md">${entry.commonName}</div>
+                <div class="col-md">${entry.category}</div>
+                <div class="col-md">${entry.origin}</div>
+            </div>
+        </li>`;
+}
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Searchbar

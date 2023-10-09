@@ -4,31 +4,32 @@ USE tdbi;
 DROP TABLE IF EXISTS catalog;
 CREATE TABLE IF NOT EXISTS catalog(
     id int NOT NULL AUTO_INCREMENT,
-    image varchar(255),
-    scientificName varchar(255) NOT NULL,
-    commonName varchar(255) NOT NULL,
-    category varchar(255) NOT NULL,
-    origin varchar(255) NOT NULL,
+    image varchar(2048),
+    scientificName varchar(2048) NOT NULL,
+    commonName varchar(2048) NOT NULL,
+    category varchar(2048) NOT NULL,
+    origin varchar(2048) NOT NULL,
     PRIMARY KEY (id)
 );
 
 DROP TABLE IF EXISTS accounts;
 CREATE TABLE IF NOT EXISTS accounts (
     id int NOT NULL AUTO_INCREMENT,
-    email varchar(255) NOT NULL,
-    firstname varchar(255) NOT NULL,
-    lastname varchar(255) NOT NULL,
-    username varchar(255) NOT NULL,
-    hash varchar(255) NOT NULL,
-    salt varchar(255) NOT NULL,
+    email varchar(2048) NOT NULL,
+    firstname varchar(2048) NOT NULL,
+    lastname varchar(2048) NOT NULL,
+    username varchar(2048) NOT NULL,
+    hash varchar(2048) NOT NULL,
+    salt varchar(2048) NOT NULL,
     PRIMARY KEY (id)
 );
 
 DROP TABLE IF EXISTS collections;
 CREATE TABLE IF NOT EXISTS collections (
     id int NOT NULL AUTO_INCREMENT,
-    name varchar(255) NOT NULL,
     ownerId int NOT NULL,
+    name varchar(2048) NOT NULL,
+    description varchar(2048),
     PRIMARY KEY (id)
 );
 
@@ -41,7 +42,7 @@ INSERT INTO accounts (email, firstname, lastname, username, hash, salt) VALUES (
     "$2b$10$5WATKQoIVg7Gf3vR1HhygO"
 );
 
-INSERT INTO collections (name, ownerId) VALUES ("Test Collection", 1);
+INSERT INTO collections (ownerId, name, description) VALUES (1, "Test Collection", "Test Description");
 
 INSERT INTO catalog (image, scientificName, commonName, category, origin) VALUES (
 "https://cdn.shopify.com/s/files/1/0095/0416/1855/products/333056878_927995305291954_7332773921864974327_n_40581be2-0fde-406f-89b5-39203f515fc2.jpg?v=1678804882",
