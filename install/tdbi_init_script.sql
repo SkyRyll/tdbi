@@ -42,7 +42,17 @@ INSERT INTO accounts (email, firstname, lastname, username, hash, salt) VALUES (
     "$2b$10$5WATKQoIVg7Gf3vR1HhygO"
 );
 
+INSERT INTO accounts (email, firstname, lastname, username, hash, salt) VALUES (
+    "nick@mail.de",
+    "Nick",
+    "Kipper",
+    "Notmadeyet",
+    "$2b$10$uox5X9gauIOChrHp6FFx.eFKc2aXJChWbtvr74ltDpYnOzO3oO.gy",
+    "$2b$10$uox5X9gauIOChrHp6FFx.e"
+);
+
 INSERT INTO collections (ownerId, name, description) VALUES (1, "Test Collection", "Test Description");
+INSERT INTO collections (ownerId, name, description) VALUES (2, "Test Collection", "Test Description");
 
 INSERT INTO catalog (image, scientificName, commonName, category, origin) VALUES (
 "https://cdn.shopify.com/s/files/1/0095/0416/1855/products/333056878_927995305291954_7332773921864974327_n_40581be2-0fde-406f-89b5-39203f515fc2.jpg?v=1678804882",
