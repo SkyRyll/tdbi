@@ -243,7 +243,7 @@ function get_error(req, res, errorMessage) {
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 app.get("/getAnimalCatalog", (req, res) => {
-    const query = "SELECT * FROM catalog";
+    const query = "SELECT * FROM catalog ORDER BY scientificName ASC";
     connection.query(query, (err, result) => {
         if (err) {
             console.error("Database query error: " + err.message);

@@ -22,12 +22,9 @@ passwordInput.addEventListener("input", () => {
     if (!hasLowerCase) {
         errorMessage.push("Password must contain at least one lowercase letter.");
     }
-    if (!hasNumbers) {
-        errorMessage.push("Password must contain at least one number.");
-    }
-    if (!hasSpecialChars) {
-        errorMessage.push("Password must contain at least one special character.");
-        errorMessage.push("! @ # $  % ^ & * ( ) _ + { } [ ] : ; < > , . ? ~ \\ -");
+    if (!hasNumbers || !hasSpecialChars) {
+        errorMessage.push("Password must contain at least one number and at least one special character.");
+        errorMessage.push("! @ # $ % ^ & * ( ) _ + { } [ ] : ; < > , . ? ~ \\ -");
     }
 
     passwordRules.innerHTML = errorMessage.map((message) => `<p class="password-rules-text">${message}</p>`).join("");
