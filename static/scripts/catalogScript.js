@@ -12,13 +12,13 @@ $(document).ready(function () {
                         entry.scientificName +
                         '\')"><div class="row  m-1 bg-dark"><div class="col-md m-4 p-0  image-container"><img src="' +
                         entry.image +
-                        '" id="img"></div><div class="col-md">' +
+                        '" id="img"></div><div class="col-md txt-center">' +
                         entry.scientificName +
-                        '</div><div class="col-md">' +
+                        '</div><div class="col-md txt-center">' +
                         entry.commonName +
-                        '</div><div class="col-md">' +
+                        '</div><div class="col-md txt-center">' +
                         entry.category +
-                        '</div><div class="col-md">' +
+                        '</div><div class="col-md txt-center">' +
                         entry.origin +
                         "</div></div></li>"
                 );
