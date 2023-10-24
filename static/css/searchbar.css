@@ -1,0 +1,16 @@
+input {
+    width: 100%;
+    margin: 1rem;
+}
+
+.form-control-dark {
+    color: #fff;
+    background-color: var(--dark);
+    border-color: var(--gray);
+}
+.form-control-dark:focus {
+    color: #fff;
+    background-color: var(--dark);
+    border-color: #fff;
+    box-shadow: 0 0 0 0.25rem rgba(255, 255, 255, 0.25);
+}
