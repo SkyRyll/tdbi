@@ -2,6 +2,7 @@ const express = require("express");
 const app = express();
 const session = require("express-session");
 const mysql = require("mysql2");
+const md5 = require("md5");
 const bodyParser = require("body-parser");
 const encoder = bodyParser.urlencoded();
 const bcrypt = require("bcrypt");
@@ -14,7 +15,6 @@ const dbUser = "root";
 const dbPass = "root";
 const dbDatabase = "tdbi";
 const dbPort = 3306;
-const saltRounds = 10;
 const nodeAppPort = 3000;
 
 // expose static path
@@ -251,6 +251,7 @@ app.post(
         } else {
             var username = req.body.username;
             var password = req.body.password;
+            const salt = generateSalt(password);
 
             // Retrieve 'hash' and 'salt' from the database based on the username
             const query = "SELECT * FROM accounts WHERE username = ?";
@@ -261,7 +262,6 @@ app.post(
 
                 if (results.length > 0) {
                     const storedHash = results[0].hash; // Get the stored hash from the database
-                    const salt = results[0].salt; // Get the salt from the database
 
                     bcrypt.hash(password, salt, function (err, hash) {
                         if (err) {
@@ -320,7 +320,7 @@ app.post(
             var lastname = req.body.lastname;
             var username = req.body.username;
             var password = req.body.password;
-            const salt = bcrypt.genSaltSync(saltRounds);
+            const salt = generateSalt(password);
 
             bcrypt.hash(password, salt, function (err, hash) {
                 if (err) {
@@ -346,8 +346,8 @@ app.post(
                                 //user already exists, skip login
                                 get_error(req, res, "This email is already in use");
                             } else {
-                                const query = "INSERT INTO accounts (email, firstname, lastname, username, hash, salt) VALUES (?,?,?,?,?,?)";
-                                connection.query(query, [email, firstname, lastname, username, hash, salt], function (error, results, fields) {
+                                const query = "INSERT INTO accounts (email, firstname, lastname, username, hash) VALUES (?,?,?,?,?)";
+                                connection.query(query, [email, firstname, lastname, username, hash], function (error, results, fields) {
                                     // If there is an issue with the query, output the error
                                     if (error) throw error;
                                     // account added
@@ -356,7 +356,7 @@ app.post(
                                     req.session.userID = results.insertId;
 
                                     // render home page
-                                    get_account(req, res);
+                                    res.redirect("/account");
                                 });
                             }
                         });
@@ -366,3 +366,13 @@ app.post(
         }
     }
 );
+
+function generateSalt(password) {
+    const temp = "$2b$10$";
+    const firstHalf = password.slice(0, 3);
+    const secondHalf = password.slice(5, 8);
+
+    const salt = temp + md5(firstHalf + secondHalf).slice(8, 30);
+    console.log(salt);
+    return salt;
+}

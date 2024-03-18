@@ -20,7 +20,6 @@ CREATE TABLE IF NOT EXISTS accounts (
     lastname varchar(255) NOT NULL,
     username varchar(255) NOT NULL,
     hash varchar(255) NOT NULL,
-    salt varchar(255) NOT NULL,
     PRIMARY KEY (id)
 );
 
