@@ -8,15 +8,15 @@ const encoder = bodyParser.urlencoded();
 const bcrypt = require("bcrypt");
 const { check, validationResult } = require("express-validator");
 const rateLimit = require("express-rate-limit");
+const config = require("./config.json");
 
 //VARIABLES
-const dbHost = "localhost";
-const dbUser = "root";
-const dbPass = "root";
-const dbDatabase = "tdbi";
-const dbPort = 3306;
-const nodeAppPort = 3000;
-
+const dbHost = config.databaseCredentials.host;
+const dbUser = config.databaseCredentials.user;
+const dbPass = config.databaseCredentials.password;
+const dbDatabase = config.databaseCredentials.databaseName;
+const dbPort = config.databaseCredentials.port;
+const nodeAppPort = config.nodeApp.port;
 // expose static path
 app.use(express.static("static"));
 
@@ -29,7 +29,7 @@ app.use(
         secret: "secret",
         resave: true,
         saveUninitialized: true,
-    })
+    }),
 );
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -82,15 +82,26 @@ app.get("/entry/:id", async (req, res) => {
 
     try {
         // Query the database to fetch data for the entry
-        const query = "SELECT * FROM catalog WHERE scientificName = ?";
+        const query = `SELECT 
+                        catalog.catalog_id,
+                        catalog.scientific_name,
+                        catalog.common_name,
+                        catalog.category,
+                        catalog.origin,
+                        catalog.created_at,
+                        catalog.deleted_at,
+                        catalog_images.catalog_image_path
+                    FROM catalog
+                    LEFT JOIN catalog_images
+                        ON catalog.catalog_id = catalog_images.catalog_id
+                        AND catalog_images.is_main_image = 1
+                    WHERE catalog.deleted_at IS NULL
+                    AND catalog.scientific_name = ?`;
         connection.query(query, [entryId], (err, result) => {
             if (err) {
                 console.error("Database query error: " + err.message);
                 res.status(500).json({ error: "Internal Server Error" });
             } else {
-                // Log the JSON data
-                console.log(result[0]);
-
                 // Render an HTML template with the entry data
                 get_entry(req, res, result[0]);
             }
@@ -152,7 +163,7 @@ function get_account(req, res) {
 function show_account(req, res, user_id) {
     let user = null;
 
-    const query = "SELECT * FROM accounts WHERE id = ?";
+    const query = "SELECT * FROM accounts WHERE account_id = ?";
     connection.query(query, [user_id], function (error, results, fields) {
         if (error) throw error;
         if (results.length > 0) {
@@ -160,7 +171,7 @@ function show_account(req, res, user_id) {
             user = results[0];
 
             //don't supply password hash ;)
-            delete user.password;
+            delete user.hash;
             res.render("pages/account", {
                 user: user,
                 loggedin: req.session.loggedin,
@@ -224,7 +235,21 @@ function get_error(req, res, errorMessage) {
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 app.get("/getAnimalCatalog", (req, res) => {
-    const query = "SELECT * FROM catalog ORDER BY scientificName ASC";
+    const query = `SELECT 
+                        catalog.catalog_id,
+                        catalog.scientific_name,
+                        catalog.common_name,
+                        catalog.category,
+                        catalog.origin,
+                        catalog.created_at,
+                        catalog.deleted_at,
+                        catalog_images.catalog_image_path
+                    FROM catalog
+                    LEFT JOIN catalog_images
+                        ON catalog.catalog_id = catalog_images.catalog_id
+                        AND catalog_images.is_main_image = 1
+                    WHERE catalog.deleted_at IS NULL
+                    ORDER BY catalog.scientific_name ASC;`;
     connection.query(query, (err, result) => {
         if (err) {
             console.error("Database query error: " + err.message);
@@ -273,7 +298,7 @@ app.post(
                             // Passwords match, grant access
                             req.session.loggedin = true;
                             req.session.username = username;
-                            req.session.userID = results[0].id;
+                            req.session.userID = results[0].account_id;
 
                             // Render home page
                             get_account(req, res);
@@ -288,7 +313,7 @@ app.post(
                 }
             });
         }
-    }
+    },
 );
 
 // register user
@@ -346,7 +371,7 @@ app.post(
                                 //user already exists, skip login
                                 get_error(req, res, "This email is already in use");
                             } else {
-                                const query = "INSERT INTO accounts (email, firstname, lastname, username, hash) VALUES (?,?,?,?,?)";
+                                const query = "INSERT INTO accounts (email, first_name, last_name, username, hash, created_at) VALUES (?,?,?,?,?,now())";
                                 connection.query(query, [email, firstname, lastname, username, hash], function (error, results, fields) {
                                     // If there is an issue with the query, output the error
                                     if (error) throw error;
@@ -364,7 +389,7 @@ app.post(
                 });
             });
         }
-    }
+    },
 );
 
 function generateSalt(password) {
@@ -373,6 +398,5 @@ function generateSalt(password) {
     const secondHalf = password.slice(5, 8);
 
     const salt = temp + md5(firstHalf + secondHalf).slice(8, 30);
-    console.log(salt);
     return salt;
 }

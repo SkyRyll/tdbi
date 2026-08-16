@@ -1,80 +1,283 @@
 CREATE DATABASE IF NOT EXISTS tdbi;
 USE tdbi;
 
-DROP TABLE IF EXISTS catalog;
-CREATE TABLE IF NOT EXISTS catalog(
-    id int NOT NULL AUTO_INCREMENT,
-    image varchar(255),
-    scientificName varchar(255) NOT NULL,
-    commonName varchar(255) NOT NULL,
-    category varchar(255) NOT NULL,
-    origin varchar(255) NOT NULL,
-    PRIMARY KEY (id)
+DROP TABLE IF EXISTS `animal_images`;
+DROP TABLE IF EXISTS `animal_molting_dates`;
+DROP TABLE IF EXISTS `animal_feeding_dates`;
+DROP TABLE IF EXISTS `animals`;
+DROP TABLE IF EXISTS `collections`;
+DROP TABLE IF EXISTS `admins`;
+DROP TABLE IF EXISTS `accounts`;
+DROP TABLE IF EXISTS `catalog_images`;
+DROP TABLE IF EXISTS `catalog`;
+
+CREATE TABLE IF NOT EXISTS `catalog` (
+  `catalog_id` integer NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  `scientific_name` varchar(255),
+  `common_name` varchar(255),
+  `category` varchar(255),
+  `origin` varchar(255),
+  `created_at` datetime,
+  `deleted_at` datetime
 );
 
-DROP TABLE IF EXISTS accounts;
-CREATE TABLE IF NOT EXISTS accounts (
-    id int NOT NULL AUTO_INCREMENT,
-    email varchar(255) NOT NULL,
-    firstname varchar(255) NOT NULL,
-    lastname varchar(255) NOT NULL,
-    username varchar(255) NOT NULL,
-    hash varchar(255) NOT NULL,
-    PRIMARY KEY (id)
+CREATE TABLE IF NOT EXISTS `catalog_images` (
+  `catalog_image_id` integer NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  `catalog_id` integer,
+  `catalog_image_path` varchar(255),
+  `is_main_image` boolean
 );
 
-INSERT INTO catalog (image, scientificName, commonName, category, origin) VALUES (
-"https://cdn.shopify.com/s/files/1/0095/0416/1855/products/333056878_927995305291954_7332773921864974327_n_40581be2-0fde-406f-89b5-39203f515fc2.jpg?v=1678804882",
-"Chromatopelma Cyaneopubescens",
-"Green Bottle Blue",
-"New World Terrestrial",
-"Venezuela");
+CREATE TABLE IF NOT EXISTS `accounts` (
+  `account_id` integer NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  `email` varchar(255),
+  `first_name` varchar(255),
+  `last_name` varchar(255),
+  `username` varchar(255),
+  `hash` varchar(255),
+  `created_at` datetime,
+  `deleted_at` datetime
+);
 
-INSERT INTO catalog (image, scientificName, commonName, category, origin) VALUES (
-"https://spidersworld.eu/1403-large_default/monocentropus-balfouri-adult-female-socotra-island-blue-baboon.jpg",
-"Monocentropus Balfouri",
-"Socotra Blue Baboon",
-"Old World Terrestrial",
-"Socotra/Yemen");
+CREATE TABLE IF NOT EXISTS `admins` (
+  `admin_id` integer NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  `account_id` integer,
+  `admin_level` integer
+);
 
-INSERT INTO catalog (image, scientificName, commonName, category, origin) VALUES (
-"https://spidersworld.eu/1446-large_default/psalmopoeus-irminia-female-7cm-suntiger-tarantula.jpg",
-"Psalmopoeus Irminia",
-"Venezuelan Suntiger",
-"New World Arboreal",
-"Venezuela");
+CREATE TABLE IF NOT EXISTS `collections` (
+  `collection_id` integer NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  `account_id` integer,
+  `collection_name` varchar(255),
+  `description` varchar(255),
+  `created_at` datetime,
+  `deleted_at` datetime
+);
 
-INSERT INTO catalog (image, scientificName, commonName, category, origin) VALUES (
-"https://spidersworld.eu/1349-large_default/brachypelma-hamorii-female-45cm-10cm-red-knee-tarantula.jpg",
-"Brachypelma Hamorii",
-"Mexican Red Knee",
-"New World Terrestrial",
-"Mexico");
+CREATE TABLE IF NOT EXISTS `animals` (
+  `animal_id` integer NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  `collection_id` integer,
+  `catalog_id` integer,
+  `animal_name` varchar(255),
+  `notes` varchar(255),
+  `received_date` date,
+  `sell_date` date,
+  `price` decimal,
+  `created_at` datetime,
+  `deleted_at` datetime
+);
 
-INSERT INTO catalog (image, scientificName, commonName, category, origin) VALUES (
-"https://spidersworld.eu/1371-large_default/cyriopagopus-sp-hati-hati-25cm.jpg",
-"Cyriopagopus sp. Hatihati",
-"Purple Earth Tiger",
-"Old World Arboreal",
-"Indonesia");
+CREATE TABLE IF NOT EXISTS `animal_feeding_dates` (
+  `feeding_date_id` integer NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  `animal_id` integer,
+  `feeding_date` date
+);
 
-INSERT INTO catalog (image, scientificName, commonName, category, origin) VALUES (
-"https://upload.wikimedia.org/wikipedia/commons/e/e9/Harpactira_pulchripes01.jpg",
-"Harpactira Pulchripes",
-"Golden blue-legged Baboon",
-"Old World Terrestrial",
-"South Africa");
+CREATE TABLE IF NOT EXISTS `animal_molting_dates` (
+  `molting_date_id` integer NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  `animal_id` integer,
+  `molting_date` date
+);
 
-INSERT INTO catalog (image, scientificName, commonName, category, origin) VALUES (
-"https://www.exoticsunlimitedusa.com/cdn/shop/products/481f4e_2fbd9604310444ba95b11e71552a525f_mv2_60e43bef-ea8d-49bd-8561-ccc0907bfe95.jpg?v=1682317520",
-"Lasiocyano Sazimai",
-"Brazilian Blue",
-"New World Terrestrial",
-"Brazil");
+CREATE TABLE IF NOT EXISTS `animal_images` (
+  `animal_image_id` integer NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  `animal_id` integer,
+  `animal_image_path` varchar(255),
+  `is_main_image` boolean
+);
 
-INSERT INTO catalog (image, scientificName, commonName, category, origin) VALUES (
-"https://argiopeterra.pl/userdata/public/gfx/893/ce7661d7bffe49b8a6b4dc81fde05f6e.jpg",
-"Chilobrachys Natanicharum",
-"Electric Blue",
-"Old World Terrestrial",
-"Thailand");
+ALTER TABLE `catalog_images`
+  ADD FOREIGN KEY (`catalog_id`) REFERENCES `catalog` (`catalog_id`);
+
+ALTER TABLE `admins`
+  ADD FOREIGN KEY (`account_id`) REFERENCES `accounts` (`account_id`);
+
+ALTER TABLE `collections`
+  ADD FOREIGN KEY (`account_id`) REFERENCES `accounts` (`account_id`);
+
+ALTER TABLE `animals`
+  ADD FOREIGN KEY (`collection_id`) REFERENCES `collections` (`collection_id`);
+
+ALTER TABLE `animals`
+  ADD FOREIGN KEY (`catalog_id`) REFERENCES `catalog` (`catalog_id`);
+
+ALTER TABLE `animal_feeding_dates`
+  ADD FOREIGN KEY (`animal_id`) REFERENCES `animals` (`animal_id`);
+
+ALTER TABLE `animal_molting_dates`
+  ADD FOREIGN KEY (`animal_id`) REFERENCES `animals` (`animal_id`);
+
+ALTER TABLE `animal_images`
+  ADD FOREIGN KEY (`animal_id`) REFERENCES `animals` (`animal_id`);
+
+INSERT INTO `accounts`
+ (`email`, `first_name`, `last_name`, `username`, `hash`, `created_at`)
+ VALUES
+ (
+    "skyryll1987@gmail.com",
+    "Nils",
+    "Simon",
+    "SkyRyll",
+    "$2b$10$ea514b7b8f173ea91358euhwCA1CkWuUgFAC0CVOq6OMXJJvGfdg6",
+    now()
+ );
+
+INSERT INTO `catalog`
+  (`scientific_name`, `common_name`, `category`, `origin`, `created_at`)
+VALUES
+  (
+    "Chromatopelma Cyaneopubescens",
+    "Green Bottle Blue",
+    "New World Terrestrial",
+    "Venezuela",
+    now()
+  );
+
+INSERT INTO `catalog`
+  (`scientific_name`, `common_name`, `category`, `origin`, `created_at`)
+VALUES
+  (
+    "Monocentropus Balfouri",
+    "Socotra Blue Baboon",
+    "Old World Terrestrial",
+    "Socotra/Yemen",
+    now()
+  );
+
+INSERT INTO `catalog`
+  (`scientific_name`, `common_name`, `category`, `origin`, `created_at`)
+VALUES
+  (
+    "Psalmopoeus Irminia",
+    "Venezuelan Suntiger",
+    "New World Arboreal",
+    "Venezuela",
+    now()
+  );
+
+INSERT INTO `catalog`
+  (`scientific_name`, `common_name`, `category`, `origin`, `created_at`)
+VALUES
+  (
+    "Brachypelma Hamorii",
+    "Mexican Red Knee",
+    "New World Terrestrial",
+    "Mexico",
+    now()
+  );
+
+INSERT INTO `catalog`
+  (`scientific_name`, `common_name`, `category`, `origin`, `created_at`)
+VALUES
+  (
+    "Cyriopagopus sp. Hatihati",
+    "Purple Earth Tiger",
+    "Old World Arboreal",
+    "Indonesia",
+    now()
+  );
+
+INSERT INTO `catalog`
+  (`scientific_name`, `common_name`, `category`, `origin`, `created_at`)
+VALUES
+  (
+    "Harpactira Pulchripes",
+    "Golden blue-legged Baboon",
+    "Old World Terrestrial",
+    "South Africa",
+    now()
+  );
+
+INSERT INTO `catalog`
+  (`scientific_name`, `common_name`, `category`, `origin`, `created_at`)
+VALUES
+  (
+    "Lasiocyano Sazimai",
+    "Brazilian Blue",
+    "New World Terrestrial",
+    "Brazil",
+    now()
+  );
+
+INSERT INTO `catalog`
+  (`scientific_name`, `common_name`, `category`, `origin`, `created_at`)
+VALUES
+  (
+    "Chilobrachys Natanicharum",
+    "Electric Blue",
+    "Old World Terrestrial",
+    "Thailand",
+    now()
+  );
+
+INSERT INTO `catalog_images`
+(`catalog_id`, `catalog_image_path`, `is_main_image`)
+VALUES
+(
+    "1",
+    "cover.png",
+    "1"
+);
+
+INSERT INTO `catalog_images`
+(`catalog_id`, `catalog_image_path`, `is_main_image`)
+VALUES
+(
+    "2",
+    "cover.png",
+    "1"
+);
+
+INSERT INTO `catalog_images`
+(`catalog_id`, `catalog_image_path`, `is_main_image`)
+VALUES
+(
+    "3",
+    "cover.png",
+    "1"
+);
+
+INSERT INTO `catalog_images`
+(`catalog_id`, `catalog_image_path`, `is_main_image`)
+VALUES
+(
+    "4",
+    "cover.png",
+    "1"
+);
+
+INSERT INTO `catalog_images`
+(`catalog_id`, `catalog_image_path`, `is_main_image`)
+VALUES
+(
+    "5",
+    "cover.png",
+    "1"
+);
+
+INSERT INTO `catalog_images`
+(`catalog_id`, `catalog_image_path`, `is_main_image`)
+VALUES
+(
+    "6",
+    "cover.png",
+    "1"
+);
+
+INSERT INTO `catalog_images`
+(`catalog_id`, `catalog_image_path`, `is_main_image`)
+VALUES
+(
+    "7",
+    "cover.png",
+    "1"
+);
+
+INSERT INTO `catalog_images`
+(`catalog_id`, `catalog_image_path`, `is_main_image`)
+VALUES
+(
+    "8",
+    "cover.png",
+    "1"
+);

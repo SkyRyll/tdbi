@@ -21,15 +21,15 @@
         <%- include('../components/navbar'); %>
         <br />
         <div style="margin-left: 10px">
-            <h1>Welcome <%= user.firstname %> <%= user.lastname %></h1>
+            <h1>Welcome <%= user.first_name %> <%= user.last_name %></h1>
             <br />
             <div style="font-size: 20px">
                 <div>Account Details:</div>
-                <div>User ID: <%= user.id %></div>
+                <div>User ID: <%= user.account_id %></div>
                 <div>E-Mail: <%= user.email %></div>
                 <div>Username: <%= user.username %></div>
-                <div>First Name: <%= user.firstname %></div>
-                <div>Last Name: <%= user.lastname %></div>
+                <div>First Name: <%= user.first_name %></div>
+                <div>Last Name: <%= user.last_name %></div>
             </div>
         </div>
     </body>
