@@ -16,7 +16,7 @@
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
 
-        <title>TDBI: <%= entry.scientificName %></title>
+        <title>TDBI: <%= entry.scientific_name %></title>
     </head>
     <body>
         <%- include('../components/navbar'); %>
@@ -24,14 +24,14 @@
             <div class="row">
                 <div class="col-md">
                     <div class="image">
-                        <img src="<%= entry.image %>" alt="Image" class="img-fluid" />
+                        <img src="<%= entry.catalog_image_path ? '/images/' + entry.catalog_id + '/' + entry.catalog_image_path : '/images/default.png' %>" alt="Image" class="img-fluid" />
                     </div>
                 </div>
                 <div class="col-md">
                     <div class="text">
-                        <h1><%= entry.scientificName %></h1>
+                        <h1><%= entry.scientific_name %></h1>
                         <br /><br />
-                        <h3>Common Name: <%= entry.commonName %></h3>
+                        <h3>Common Name: <%= entry.common_name %></h3>
                         <br /><br />
                         <h3>Category: <%= entry.category %></h3>
                         <br /><br />
@@ -46,6 +46,5 @@
                 </div>
             </div>
         </div>
-        <script type="text/javascript" src="/scripts/entryScript.js"></script>
     </body>
 </html>

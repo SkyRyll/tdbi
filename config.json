@@ -1,0 +1,12 @@
+{
+    "nodeApp": {
+        "port": "3000"
+    },
+    "databaseCredentials": {
+        "host": "localhost",
+        "user": "root",
+        "password": "root",
+        "databaseName": "tdbi",
+        "port": 3306
+    }
+}
