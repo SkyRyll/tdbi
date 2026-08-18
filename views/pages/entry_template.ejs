@@ -24,7 +24,15 @@
             <div class="row">
                 <div class="col-md">
                     <div class="image">
-                        <img src="<%= entry.catalog_image_path ? '/images/' + entry.catalog_id + '/' + entry.catalog_image_path : '/images/default.png' %>" alt="Image" class="img-fluid" />
+                        <img
+                            src="<%= entry.catalog_image_path ? '/images/' + entry.catalog_id + '/' + entry.catalog_image_path : '/images/default.png' %>"
+                            onerror="
+                                this.onerror = null;
+                                this.src = '/images/default.png';
+                            "
+                            alt="Image"
+                            class="img-fluid"
+                        />
                     </div>
                 </div>
                 <div class="col-md">

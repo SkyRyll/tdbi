@@ -7,15 +7,14 @@ $(document).ready(function () {
         dataType: "json",
         success: function (data) {
             data.forEach(function (entry) {
-                console.log(entry.catalog_image_path);
-                const imagePath = entry.catalog_image_path ? "/images/" + entry.catalog_id + "/" + entry.catalog_image_path : "/static/images/default.png";
+                const imagePath = entry.catalog_image_path ? "/images/" + entry.catalog_id + "/" + entry.catalog_image_path : "/images/default.png";
 
                 $("#animalCatalog").append(
                     '<li class="list-group-item bg-dark catalog-row" onclick="redirectToEntry(\'' +
                         entry.scientific_name +
                         '\')"><div class="row"><div class="col-md image-container"><img src="' +
                         imagePath +
-                        '" id="img"></div><div class="col-md">' +
+                        '" onerror="this.onerror=null; this.src=\'/images/default.png\';" id="img"></div><div class="col-md">' +
                         entry.scientific_name +
                         '</div><div class="col-md">' +
                         entry.common_name +
