@@ -1,6 +1,6 @@
 {
     "nodeApp": {
-        "port": "3000"
+        "port": "19870"
     },
     "databaseCredentials": {
         "host": "localhost",
