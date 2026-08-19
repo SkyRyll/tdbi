@@ -1754,3 +1754,69 @@ VALUES
     "cover.png",
     "1"
 );
+
+------------------------------------------------------------------------
+
+INSERT INTO `catalog`
+  (`scientific_name`, `common_name`, `category`, `origin`, `created_at`)
+VALUES
+  (
+    "Psalmopoeus victori",
+    "Mexican half & half",
+    "New World Arboreal",
+    "Mexico",
+    now()
+  );
+
+INSERT INTO `catalog_images`
+(`catalog_id`, `catalog_image_path`, `is_main_image`)
+VALUES
+(
+    "81",
+    "cover.png",
+    "1"
+);
+
+------------------------------------------------------------------------
+
+INSERT INTO `catalog`
+  (`scientific_name`, `common_name`, `category`, `origin`, `created_at`)
+VALUES
+  (
+    "Pandinus imperator",
+    "Emperor scorpion",
+    "Old World Terrestrial",
+    "West Africa",
+    now()
+  );
+
+INSERT INTO `catalog_images`
+(`catalog_id`, `catalog_image_path`, `is_main_image`)
+VALUES
+(
+    "82",
+    "cover.png",
+    "1"
+);
+
+------------------------------------------------------------------------
+
+INSERT INTO `catalog`
+  (`scientific_name`, `common_name`, `category`, `origin`, `created_at`)
+VALUES
+  (
+    "Heterometrus silenus",
+    "Asian forest scorpion",
+    "Old World Terrestrial",
+    "Vietnam/Laos",
+    now()
+  );
+
+INSERT INTO `catalog_images`
+(`catalog_id`, `catalog_image_path`, `is_main_image`)
+VALUES
+(
+    "83",
+    "cover.png",
+    "1"
+);
